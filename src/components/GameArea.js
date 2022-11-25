@@ -2,6 +2,17 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { increment, reset, setRunning } from "../redux/gameSlice"
 
+import Duck from "../assets/Duck.png"
+
+import Bitch from "../assets/Bitch.wav"
+import Quack1 from "../assets/Quack1.wav"
+import Quack2 from "../assets/Quack2.wav"
+import Quack3 from "../assets/Quack3.wav"
+import Quack4 from "../assets/Quack4.wav"
+import Quack5 from "../assets/Quack5.wav"
+import Quack6 from "../assets/Quack6.wav"
+import Quack7 from "../assets/Quack7.wav"
+
 const BIRD_SIZE = 75
 const GAME_HEIGHT = 700
 const GAME_WIDTH = 450
@@ -18,6 +29,7 @@ export default function GameArea() {
   const [obstacleHeight, setObstacleHight] = useState(350)
   const [obstacleLeft, setObstacleLeft] = useState(GAME_WIDTH - OBSTACLE_WIDTH)
   const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight
+  const Quacks =[Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7]
 
   const running = useSelector((state) => state.game.running)
 
@@ -63,6 +75,8 @@ export default function GameArea() {
     const collidedBot = birdPos <= GAME_HEIGHT && birdPos >= GAME_HEIGHT - bottomObstacleHeight - BIRD_SIZE
 
     if( obstacleLeft >= 0 && obstacleLeft <= OBSTACLE_WIDTH && (collidedBot || collidedTop)) {
+      let bitch = new Audio(Bitch)
+      bitch.play()
       dispatch(setRunning(false))
       setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2)
       dispatch(reset())
@@ -72,6 +86,10 @@ export default function GameArea() {
 
   const handleClick = () => {
     let newBirdPos = birdPos - JUMP_HEIGHT
+
+    let quack = new Audio(Quacks[Math.floor(Math.random()* 6)])
+    quack.play()
+
     if (!running)
       dispatch(setRunning(true))
     else if (newBirdPos < 0)
@@ -84,6 +102,7 @@ export default function GameArea() {
       className="GameArea bg-slate-800 relative overflow-hidden"
       style={{height: GAME_HEIGHT, width: GAME_WIDTH}}
       onClick={handleClick}>
+        <Sky />
         <Obstacle
           top={0}
           height={obstacleHeight}
@@ -99,6 +118,7 @@ export default function GameArea() {
           width={OBSTACLE_WIDTH}
           left={obstacleLeft}
         />
+        <Ground />
     </div>
   )
 }
@@ -106,8 +126,8 @@ export default function GameArea() {
 const Bird = (props) => {
   return (
     <div
-      className="Bird bg-orange-600 absolute"
-      style={{height: BIRD_SIZE, width: BIRD_SIZE, top: props.top}}>
+      className={`Bird bg-contain absolute z-10`}
+      style={{height: BIRD_SIZE, width: BIRD_SIZE, top: props.top, backgroundImage: `url(${Duck})`}}>
     </div>
   )
 }
@@ -115,8 +135,23 @@ const Bird = (props) => {
 const Obstacle = (props) => {
   return(
     <div
-      className="Pipe bg-red-500 relative"
+      className={`Pipe bg-red-500 relative z-10`}
       style={{top: props.top, height: props.height, width: props.width, left: props.left}}>
+    </div>
+  )
+}
+
+const Sky = () => {
+  return(
+    <div
+      className="Sky absolute bg-gradient-to-b from-sky-600 to-sky-300  h-4/5 w-full">
+    </div>
+  )
+}
+
+const Ground = () => {
+  return (
+    <div className="Ground bottom-0 absolute bg-lime-600 h-1/5 w-full">
     </div>
   )
 }
