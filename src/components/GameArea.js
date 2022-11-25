@@ -1,10 +1,20 @@
 /* eslint-disable react/prop-types */
+/* eslint no-unused-vars: 1*/
+
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { increment, reset, setRunning } from '../redux/gameSlice';
+import {
+  increment,
+  reset,
+  setRunning,
+  setGameOver,
+  setLastScore,
+} from '../redux/gameSlice';
 
+//Image Imports
 import Duck from '../assets/Duck.png';
 
+//Sound Imports
 import Bitch from '../assets/Bitch.wav';
 import Quack1 from '../assets/Quack1.wav';
 import Quack2 from '../assets/Quack2.wav';
@@ -14,6 +24,7 @@ import Quack5 from '../assets/Quack5.wav';
 import Quack6 from '../assets/Quack6.wav';
 import Quack7 from '../assets/Quack7.wav';
 
+//Constants
 const BIRD_SIZE = 75;
 const GAME_HEIGHT = 700;
 const GAME_WIDTH = 450;
@@ -33,11 +44,14 @@ export default function GameArea() {
   const Quacks = [Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7];
 
   const running = useSelector((state) => state.game.running);
+  const gameOver = useSelector((state) => state.game.gameOver);
+  const currentScore = useSelector((state) => state.game.score);
 
   useEffect(() => {
     let timeId;
 
     if (running && birdPos < GAME_HEIGHT - BIRD_SIZE) {
+      dispatch(setGameOver(false));
       timeId = setInterval(() => {
         setBirdPos((birdPos) => birdPos + GRAVITY);
       }, 24);
@@ -64,7 +78,7 @@ export default function GameArea() {
       setObstacleHight(
         Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
       );
-      // setObstacleHight(425)
+
       if (running) dispatch(increment());
     }
   }, [obstacleLeft, dispatch, running]);
@@ -81,47 +95,56 @@ export default function GameArea() {
       (collidedBot || collidedTop)
     ) {
       let bitch = new Audio(Bitch);
+
       bitch.play();
+
+      dispatch(setLastScore(currentScore));
       dispatch(setRunning(false));
-      setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
+      dispatch(setGameOver(true));
       dispatch(reset());
+
+      setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
     }
   }, [birdPos, obstacleHeight, bottomObstacleHeight, obstacleLeft, dispatch]);
 
   const handleClick = () => {
     let newBirdPos = birdPos - JUMP_HEIGHT;
 
-    let quack = new Audio(Quacks[Math.floor(Math.random() * 6)]);
-    quack.play();
+    let quack = new Audio(Quacks[Math.floor(Math.random() * Quacks.length)]);
 
-    if (!running) dispatch(setRunning(true));
-    else if (newBirdPos < 0) setBirdPos(0);
-    else setBirdPos(newBirdPos);
+    if (!gameOver) {
+      quack.play();
+      if (!running) dispatch(setRunning(true));
+      else if (newBirdPos < 0) setBirdPos(0);
+      else setBirdPos(newBirdPos);
+    }
   };
 
   return (
-    <div
-      className='GameArea bg-slate-800 relative overflow-hidden'
-      style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
-      onClick={handleClick}
-    >
-      <Sky />
-      <Obstacle
-        top={0}
-        height={obstacleHeight}
-        width={OBSTACLE_WIDTH}
-        left={obstacleLeft}
-      />
+    <div className='GameBox bg-slate-800 p-4 rounded-lg drop-shadow-lg'>
+      <div
+        className='GameArea relative overflow-hidden'
+        style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
+        onClick={handleClick}>
+        {gameOver && <GameOver />}
+        <Sky />
+        <Obstacle
+          top={0}
+          height={obstacleHeight}
+          width={OBSTACLE_WIDTH}
+          left={obstacleLeft}
+        />
 
-      <Bird top={birdPos} />
+        <Bird top={birdPos} />
 
-      <Obstacle
-        top={GAME_HEIGHT - obstacleHeight - bottomObstacleHeight}
-        height={bottomObstacleHeight}
-        width={OBSTACLE_WIDTH}
-        left={obstacleLeft}
-      />
-      <Ground />
+        <Obstacle
+          top={GAME_HEIGHT - obstacleHeight - bottomObstacleHeight}
+          height={bottomObstacleHeight}
+          width={OBSTACLE_WIDTH}
+          left={obstacleLeft}
+        />
+        <Ground />
+      </div>
     </div>
   );
 }
@@ -135,8 +158,7 @@ const Bird = (props) => {
         width: BIRD_SIZE,
         top: props.top,
         backgroundImage: `url(${Duck})`,
-      }}
-    ></div>
+      }}></div>
   );
 };
 
@@ -149,19 +171,44 @@ const Obstacle = (props) => {
         height: props.height,
         width: props.width,
         left: props.left,
-      }}
-    ></div>
+      }}></div>
   );
 };
 
 const Sky = () => {
+  const running = useSelector((state) => state.game.running);
+  const gameOver = useSelector((state) => state.game.gameOver);
+
+  let click = !running && !gameOver;
+
   return (
-    <div className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300  h-4/5 w-full'></div>
+    <div className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300 h-4/5 w-full flex justify-center items-center select-none text-white text-[40px]'>
+      {click && <p>Click To Start</p>}
+    </div>
   );
 };
 
 const Ground = () => {
   return (
     <div className='Ground bottom-0 absolute bg-lime-600 h-1/5 w-full'></div>
+  );
+};
+
+const GameOver = () => {
+  let insults = ['You Suck', 'Git Gud', 'Skill Issue'];
+
+  const lastScore = useSelector((state) => state.game.lastScore);
+  const dispatch = useDispatch();
+
+  return (
+    <div className='GameOver absolute flex flex-col justify-evenly items-center text-white text-[40px] h-full w-full bg-opacity-75 bg-fuchsia-700 z-20 select-none'>
+      <p>{lastScore}</p>
+      <p>{insults[Math.floor(Math.random() * insults.length)]}</p>
+      <button
+        className='flex justify-center items-center border rounded p-1'
+        onClick={() => dispatch(setGameOver(false))}>
+        Play Again?
+      </button>
+    </div>
   );
 };
