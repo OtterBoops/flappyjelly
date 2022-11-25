@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import { useDispatch } from "react-redux"
-import { increment, reset } from "../redux/gameSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { increment, reset, setRunning } from "../redux/gameSlice"
 
 const BIRD_SIZE = 75
 const GAME_HEIGHT = 700
 const GAME_WIDTH = 450
 const GRAVITY = 10
-const SPEED = 15
+const SPEED = 10
 const JUMP_HEIGHT = 100
 const OBSTACLE_WIDTH = 50
 const OBSTACLE_GAP = BIRD_SIZE * 3
@@ -15,11 +15,11 @@ export default function GameArea() {
   const dispatch = useDispatch()
 
   const [birdPos, setBirdPos] = useState(GAME_HEIGHT / 2 - BIRD_SIZE / 2)
-  const [running, setRunning] = useState(false)
   const [obstacleHeight, setObstacleHight] = useState(350)
   const [obstacleLeft, setObstacleLeft] = useState(GAME_WIDTH - OBSTACLE_WIDTH)
-
   const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight
+
+  const running = useSelector((state) => state.game.running)
 
   useEffect(() => {
     let timeId
@@ -51,18 +51,19 @@ export default function GameArea() {
     else {
         setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH)
         setObstacleHight(Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP)))
+        // setObstacleHight(425)
         if (running)
           dispatch(increment())
     }
 
-  }, [running, obstacleLeft, dispatch])
+  }, [obstacleLeft, dispatch, running])
 
   useEffect(() => {
     const collidedTop = birdPos >= 0 && birdPos < obstacleHeight
-    const collidedBot = birdPos <= GAME_HEIGHT && birdPos >= GAME_HEIGHT - bottomObstacleHeight
+    const collidedBot = birdPos <= GAME_HEIGHT && birdPos >= GAME_HEIGHT - bottomObstacleHeight - BIRD_SIZE
 
     if( obstacleLeft >= 0 && obstacleLeft <= OBSTACLE_WIDTH && (collidedBot || collidedTop)) {
-      setRunning(false)
+      dispatch(setRunning(false))
       setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2)
       dispatch(reset())
     }
@@ -72,7 +73,7 @@ export default function GameArea() {
   const handleClick = () => {
     let newBirdPos = birdPos - JUMP_HEIGHT
     if (!running)
-      setRunning(true)
+      dispatch(setRunning(true))
     else if (newBirdPos < 0)
       setBirdPos(0)
     else (setBirdPos(newBirdPos))

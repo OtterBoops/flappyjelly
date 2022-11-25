@@ -13,12 +13,12 @@ export const gameSlice = createSlice({
     reset: (state) => {
       state.score = 0
     },
-    running: (state, running) => {
-      state.running = running
+    setRunning: (state, action) => {
+      state.running = action.payload
     }
   }
 })
 
-export const { increment, reset, running} = gameSlice.actions
+export const { increment, reset, setRunning } = gameSlice.actions
 
 export default gameSlice.reducer
