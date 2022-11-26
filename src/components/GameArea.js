@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint no-unused-vars: 1*/
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,6 +32,7 @@ const SPEED = 10;
 const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 50;
 const OBSTACLE_GAP = BIRD_SIZE * 3;
+const HIGHSCORE_AMOUNT = 10;
 
 export default function GameArea() {
   const dispatch = useDispatch();
@@ -46,6 +46,11 @@ export default function GameArea() {
   const running = useSelector((state) => state.game.running);
   const gameOver = useSelector((state) => state.game.gameOver);
   const currentScore = useSelector((state) => state.game.score);
+
+  if (localStorage.getItem('scores') === null)
+    localStorage.setItem('scores', JSON.stringify([]));
+
+  let scores = JSON.parse(localStorage.getItem('scores'));
 
   useEffect(() => {
     let timeId;
@@ -103,13 +108,29 @@ export default function GameArea() {
       dispatch(setGameOver(true));
       dispatch(reset());
 
+      if (scores.length < HIGHSCORE_AMOUNT) {
+        scores.push(currentScore);
+        scores.sort((a, b) => {
+          return b - a;
+        });
+      } else if (
+        scores.length === HIGHSCORE_AMOUNT &&
+        scores[scores.length - 1] < currentScore
+      ) {
+        scores[scores.length - 1] = currentScore;
+        scores.sort((a, b) => {
+          return b - a;
+        });
+      }
+
+      localStorage.setItem('scores', JSON.stringify(scores));
+
       setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
     }
   }, [birdPos, obstacleHeight, bottomObstacleHeight, obstacleLeft, dispatch]);
 
   const handleClick = () => {
     let newBirdPos = birdPos - JUMP_HEIGHT;
-
     let quack = new Audio(Quacks[Math.floor(Math.random() * Quacks.length)]);
 
     if (!gameOver) {
@@ -121,12 +142,15 @@ export default function GameArea() {
   };
 
   return (
-    <div className='GameBox bg-slate-800 p-4 rounded-lg drop-shadow-lg'>
+    <div
+      className='GameBox bg-[#e2cbdd] p-4 rounded-lg'
+      style={{ boxShadow: 'inset 0px 0px 10px 0px rgba(0,0,0,0.75)' }}>
       <div
-        className='GameArea relative overflow-hidden'
+        className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
         onClick={handleClick}>
         {gameOver && <GameOver />}
+        {running && <ScoreDisplay />}
         <Sky />
         <Obstacle
           top={0}
@@ -148,6 +172,16 @@ export default function GameArea() {
     </div>
   );
 }
+
+const ScoreDisplay = () => {
+  const currentScore = useSelector((state) => state.game.score);
+
+  return (
+    <div className='GameScore absolute w-full text-center z-10 mt-10 text-[40px] text-neutral-100 font-bold'>
+      {currentScore}
+    </div>
+  );
+};
 
 const Bird = (props) => {
   return (
@@ -182,7 +216,7 @@ const Sky = () => {
   let click = !running && !gameOver;
 
   return (
-    <div className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300 h-4/5 w-full flex justify-center items-center select-none text-white text-[40px]'>
+    <div className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300 h-4/5 w-full flex justify-center items-center select-none text-neutral-100 text-[40px]'>
       {click && <p>Click To Start</p>}
     </div>
   );
@@ -190,19 +224,28 @@ const Sky = () => {
 
 const Ground = () => {
   return (
-    <div className='Ground bottom-0 absolute bg-lime-600 h-1/5 w-full'></div>
+    <div className='Ground bottom-0 absolute bg-gradient-to-b from-lime-600 to-lime-800 h-1/5 w-full'></div>
   );
 };
 
 const GameOver = () => {
-  let insults = ['You Suck', 'Git Gud', 'Skill Issue'];
+  let insults = [
+    'You Suck',
+    'Git Gud',
+    'Skill Issue',
+    'Short + L',
+    'Get Owned',
+    'Learn to Play',
+    'Stinky',
+    'Stop Playing',
+  ];
 
   const lastScore = useSelector((state) => state.game.lastScore);
   const dispatch = useDispatch();
 
   return (
-    <div className='GameOver absolute flex flex-col justify-evenly items-center text-white text-[40px] h-full w-full bg-opacity-75 bg-fuchsia-700 z-20 select-none'>
-      <p>{lastScore}</p>
+    <div className='GameOver absolute flex flex-col justify-evenly items-center text-neutral-800 text-[40px] h-full w-full bg-[#e2cbdd] z-20 select-none'>
+      <p className='font-bold'>{lastScore}</p>
       <p>{insults[Math.floor(Math.random() * insults.length)]}</p>
       <button
         className='flex justify-center items-center border rounded p-1'

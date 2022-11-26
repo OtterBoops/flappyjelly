@@ -11,11 +11,13 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-body, body *  {
+body,
+body * {
   /* border: 1px solid royalblue; */
 }
 
-#root, .App {
+#root,
+.App {
   min-height: 100vh;
   height: 100vh;
 }
