@@ -16,9 +16,10 @@ jobs:
       - name: Copy folder content recursively to vps
         uses: appleboy/scp-action@master
         with:
-          source : build/*
+          source : build
           target: /var/www/html/flappyjelly
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
+          strip_components: 1
