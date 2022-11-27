@@ -13,7 +13,7 @@ body {
 }
 body,
 body * {
-  /* border: 1px solid royalblue; */
+  border: 1px solid royalblue;
 }
 
 #root,
@@ -25,4 +25,12 @@ body * {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.inset-shadow {
+  box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+
+.normal-shadow {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
 }

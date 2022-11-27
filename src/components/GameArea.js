@@ -34,22 +34,21 @@ const OBSTACLE_WIDTH = 50;
 const OBSTACLE_GAP = BIRD_SIZE * 3;
 const HIGHSCORE_AMOUNT = 10;
 
-export default function GameArea() {
-  const dispatch = useDispatch();
-
+export default function GameArea(props) {
+  //Local State
   const [birdPos, setBirdPos] = useState(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
   const [obstacleHeight, setObstacleHight] = useState(350);
   const [obstacleLeft, setObstacleLeft] = useState(GAME_WIDTH - OBSTACLE_WIDTH);
-  const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight;
-  const Quacks = [Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7];
 
+  //Redux State
+  const dispatch = useDispatch();
   const running = useSelector((state) => state.game.running);
   const gameOver = useSelector((state) => state.game.gameOver);
   const currentScore = useSelector((state) => state.game.score);
 
-  if (localStorage.getItem('scores') === null)
-    localStorage.setItem('scores', JSON.stringify([]));
-
+  //Other Consts
+  const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight;
+  const Quacks = [Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7];
   let scores = JSON.parse(localStorage.getItem('scores'));
 
   useEffect(() => {
@@ -126,6 +125,7 @@ export default function GameArea() {
       localStorage.setItem('scores', JSON.stringify(scores));
 
       setBirdPos(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
+      props.update();
     }
   }, [birdPos, obstacleHeight, bottomObstacleHeight, obstacleLeft, dispatch]);
 
@@ -142,9 +142,7 @@ export default function GameArea() {
   };
 
   return (
-    <div
-      className='GameBox bg-[#e2cbdd] p-4 rounded-lg'
-      style={{ boxShadow: 'inset 0px 0px 10px 0px rgba(0,0,0,0.75)' }}>
+    <div className='GameBox bg-[#e2cbdd] p-4 rounded-lg inset-shadow'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
