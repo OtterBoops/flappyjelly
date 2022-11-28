@@ -56,7 +56,7 @@ export default function GameArea(props) {
   useEffect(() => {
     let timeId;
 
-    if (running && birdPos < GAME_HEIGHT - BIRD_SIZE) {
+    if (running) {
       dispatch(setGameOver(false));
       // if (!inverted)
       //   timeId = setInterval(() => {
@@ -89,37 +89,39 @@ export default function GameArea(props) {
     };
   }, [birdPos, running]);
 
-  useEffect(() => {
-    let obstacleId;
+  // useEffect(() => {
+  //   let obstacleId;
 
-    if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
-      obstacleId = setInterval(() => {
-        setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
-      }, GAME_TICK);
+  //   if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
+  //     obstacleId = setInterval(() => {
+  //       setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
+  //     }, GAME_TICK);
 
-      return () => {
-        clearInterval(obstacleId);
-      };
-    } else {
-      setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
-      setObstacleHight(
-        Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
-      );
+  //     return () => {
+  //       clearInterval(obstacleId);
+  //     };
+  //   } else {
+  //     setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
+  //     setObstacleHight(
+  //       Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
+  //     );
 
-      if (running) dispatch(increment());
-    }
-  }, [obstacleLeft, dispatch, running]);
+  //     if (running) dispatch(increment());
+  //   }
+  // }, [obstacleLeft, dispatch, running]);
 
   useEffect(() => {
     const collidedTop = birdPos >= 0 && birdPos < obstacleHeight;
     const collidedBot =
       birdPos <= GAME_HEIGHT &&
       birdPos >= GAME_HEIGHT - bottomObstacleHeight - BIRD_SIZE;
+    const collidedGround = birdPos >= GAME_HEIGHT - BIRD_SIZE;
 
     if (
-      obstacleLeft >= 0 &&
-      obstacleLeft <= OBSTACLE_WIDTH &&
-      (collidedBot || collidedTop)
+      (obstacleLeft >= 0 &&
+        obstacleLeft <= OBSTACLE_WIDTH &&
+        (collidedBot || collidedTop)) ||
+      collidedGround
     ) {
       let bitch = new Audio(Bitch);
 
@@ -159,19 +161,13 @@ export default function GameArea(props) {
     quack.play();
 
     if (!gameOver) {
-      let timeout2;
-
       if (!running) dispatch(setRunning(true));
       else if (newBirdPos < 0) setBirdPos(0);
       else {
         setInverted(true);
-        timeout2 = setTimeout(() => {
+        setTimeout(() => {
           setInverted(false);
         }, GAME_TICK * 6);
-
-        return () => {
-          clearTimeout(timeout2);
-        };
       }
     }
   };
