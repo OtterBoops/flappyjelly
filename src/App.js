@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setGameOver } from './redux/gameSlice';
 
-import Header from './components/Header';
+// import Header from './components/Header';
 import GameArea from './components/GameArea';
 import Footer from './components/Footer';
 import StatsArea from './components/StatsArea';

@@ -54,7 +54,7 @@ export default function GameArea(props) {
   let scores = JSON.parse(localStorage.getItem('scores'));
 
   useEffect(() => {
-    let timeId, timeout;
+    let timeId;
 
     if (running && birdPos < GAME_HEIGHT - BIRD_SIZE) {
       dispatch(setGameOver(false));
