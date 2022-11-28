@@ -80,7 +80,7 @@ export default function GameArea(props) {
 
       timeId = setInterval(() => {
         if (!inverted) setBirdPos((birdPos) => birdPos + GRAVITY);
-        else setBirdPos((birdPos) => birdPos - GRAVITY * 2);
+        else setBirdPos((birdPos) => birdPos - GRAVITY * 4);
       }, GAME_TICK);
     }
 
@@ -167,7 +167,7 @@ export default function GameArea(props) {
         setInverted(true);
         timeout2 = setTimeout(() => {
           setInverted(false);
-        }, GAME_TICK * 12);
+        }, GAME_TICK * 6);
 
         return () => {
           clearTimeout(timeout2);
