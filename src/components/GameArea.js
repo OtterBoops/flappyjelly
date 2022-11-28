@@ -89,26 +89,26 @@ export default function GameArea(props) {
     };
   }, [birdPos, running]);
 
-  // useEffect(() => {
-  //   let obstacleId;
+  useEffect(() => {
+    let obstacleId;
 
-  //   if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
-  //     obstacleId = setInterval(() => {
-  //       setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
-  //     }, GAME_TICK);
+    if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
+      obstacleId = setInterval(() => {
+        setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
+      }, GAME_TICK);
 
-  //     return () => {
-  //       clearInterval(obstacleId);
-  //     };
-  //   } else {
-  //     setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
-  //     setObstacleHight(
-  //       Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
-  //     );
+      return () => {
+        clearInterval(obstacleId);
+      };
+    } else {
+      setObstacleLeft(GAME_WIDTH - OBSTACLE_WIDTH);
+      setObstacleHight(
+        Math.floor(Math.random() * (GAME_HEIGHT - OBSTACLE_GAP))
+      );
 
-  //     if (running) dispatch(increment());
-  //   }
-  // }, [obstacleLeft, dispatch, running]);
+      if (running) dispatch(increment());
+    }
+  }, [obstacleLeft, dispatch, running]);
 
   useEffect(() => {
     const collidedTop = birdPos >= 0 && birdPos < obstacleHeight;
