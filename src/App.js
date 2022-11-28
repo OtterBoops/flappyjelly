@@ -6,8 +6,6 @@ import Header from './components/Header';
 import GameArea from './components/GameArea';
 import Footer from './components/Footer';
 import StatsArea from './components/StatsArea';
-import What from './components/What';
-
 import Clouds from './assets/Background1.jpg';
 
 if (localStorage.getItem('scores') === null)
@@ -34,8 +32,8 @@ function App() {
     <div
       className='App flex flex-col justify-between items-center w-full bg-[#b6eaff] bg-contain bg-no-repeat bg-bottom'
       style={{ backgroundImage: `url(${Clouds})` }}>
-      <Header />
-      <main className='w-11/12 flex justify-between px-10 items-center'>
+      {/* <Header /> */}
+      <main className='w-11/12 flex justify-evenly px-10 items-center flex-col grow '>
         <StatsArea
           name={random}
           scores={scores}
@@ -43,7 +41,6 @@ function App() {
           update={() => update()}
         />
         <GameArea update={() => update()} />
-        <What />
       </main>
       <Footer />
     </div>

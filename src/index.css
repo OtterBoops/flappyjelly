@@ -13,7 +13,7 @@ body {
 }
 body,
 body * {
-  border: 1px solid royalblue;
+  /* border: 1px solid royalblue; */
 }
 
 #root,

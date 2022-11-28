@@ -27,8 +27,9 @@ import Quack7 from '../assets/Quack7.wav';
 const BIRD_SIZE = 75;
 const GAME_HEIGHT = 700;
 const GAME_WIDTH = 450;
-const GRAVITY = 10;
-const SPEED = 10;
+const GRAVITY = 5;
+const SPEED = 5;
+const GAME_TICK = 12;
 const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 50;
 const OBSTACLE_GAP = BIRD_SIZE * 3;
@@ -39,6 +40,7 @@ export default function GameArea(props) {
   const [birdPos, setBirdPos] = useState(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
   const [obstacleHeight, setObstacleHight] = useState(350);
   const [obstacleLeft, setObstacleLeft] = useState(GAME_WIDTH - OBSTACLE_WIDTH);
+  const [inverted, setInverted] = useState(false);
 
   //Redux State
   const dispatch = useDispatch();
@@ -52,13 +54,34 @@ export default function GameArea(props) {
   let scores = JSON.parse(localStorage.getItem('scores'));
 
   useEffect(() => {
-    let timeId;
+    let timeId, timeout;
 
     if (running && birdPos < GAME_HEIGHT - BIRD_SIZE) {
       dispatch(setGameOver(false));
+      // if (!inverted)
+      //   timeId = setInterval(() => {
+      //     setBirdPos((birdPos) => birdPos + GRAVITY);
+      //   }, 24);
+      // else
+      //   timeId = setInterval(() => {
+      //     setBirdPos((birdPos) => birdPos - GRAVITY);
+      //   }, 72);
+
+      // timeId = setInterval(() => {
+      //   if (!inverted) setBirdPos((birdPos) => birdPos + GRAVITY);
+      //   else {
+      //     for (let i = 0; i < 8; i++) {
+      //       timeout = setTimeout(() => {
+      //         setBirdPos((birdPos) => birdPos - GRAVITY);
+      //       }, GAME_TICK);
+      //     }
+      //   }
+      // }, GAME_TICK);
+
       timeId = setInterval(() => {
-        setBirdPos((birdPos) => birdPos + GRAVITY);
-      }, 24);
+        if (!inverted) setBirdPos((birdPos) => birdPos + GRAVITY);
+        else setBirdPos((birdPos) => birdPos - GRAVITY * 2);
+      }, GAME_TICK);
     }
 
     return () => {
@@ -72,7 +95,7 @@ export default function GameArea(props) {
     if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
       obstacleId = setInterval(() => {
         setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
-      }, 24);
+      }, GAME_TICK);
 
       return () => {
         clearInterval(obstacleId);
@@ -131,18 +154,30 @@ export default function GameArea(props) {
 
   const handleClick = () => {
     let newBirdPos = birdPos - JUMP_HEIGHT;
+
     let quack = new Audio(Quacks[Math.floor(Math.random() * Quacks.length)]);
+    quack.play();
 
     if (!gameOver) {
-      quack.play();
+      let timeout2;
+
       if (!running) dispatch(setRunning(true));
       else if (newBirdPos < 0) setBirdPos(0);
-      else setBirdPos(newBirdPos);
+      else {
+        setInverted(true);
+        timeout2 = setTimeout(() => {
+          setInverted(false);
+        }, GAME_TICK * 12);
+
+        return () => {
+          clearTimeout(timeout2);
+        };
+      }
     }
   };
 
   return (
-    <div className='GameBox bg-[#e2cbdd] p-4 rounded-lg inset-shadow'>
+    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg inset-shadow'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
@@ -242,7 +277,7 @@ const GameOver = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className='GameOver absolute flex flex-col justify-evenly items-center text-neutral-800 text-[40px] h-full w-full bg-[#e2cbdd] z-20 select-none'>
+    <div className='GameOver absolute flex flex-col justify-evenly items-center text-neutral-800 text-[40px] h-full w-full bg-[#f6e1f2] z-20 select-none'>
       <p className='font-bold'>{lastScore}</p>
       <p>{insults[Math.floor(Math.random() * insults.length)]}</p>
       <button
