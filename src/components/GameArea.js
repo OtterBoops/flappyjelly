@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import {
   increment,
   reset,
@@ -58,25 +59,6 @@ export default function GameArea(props) {
 
     if (running) {
       dispatch(setGameOver(false));
-      // if (!inverted)
-      //   timeId = setInterval(() => {
-      //     setBirdPos((birdPos) => birdPos + GRAVITY);
-      //   }, 24);
-      // else
-      //   timeId = setInterval(() => {
-      //     setBirdPos((birdPos) => birdPos - GRAVITY);
-      //   }, 72);
-
-      // timeId = setInterval(() => {
-      //   if (!inverted) setBirdPos((birdPos) => birdPos + GRAVITY);
-      //   else {
-      //     for (let i = 0; i < 8; i++) {
-      //       timeout = setTimeout(() => {
-      //         setBirdPos((birdPos) => birdPos - GRAVITY);
-      //       }, GAME_TICK);
-      //     }
-      //   }
-      // }, GAME_TICK);
 
       timeId = setInterval(() => {
         if (!inverted) setBirdPos((birdPos) => birdPos + GRAVITY);
@@ -158,9 +140,9 @@ export default function GameArea(props) {
     let newBirdPos = birdPos - JUMP_HEIGHT;
 
     let quack = new Audio(Quacks[Math.floor(Math.random() * Quacks.length)]);
-    quack.play();
 
     if (!gameOver) {
+      quack.play();
       if (!running) dispatch(setRunning(true));
       else if (newBirdPos < 0) setBirdPos(0);
       else {
@@ -173,30 +155,34 @@ export default function GameArea(props) {
   };
 
   return (
-    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg inset-shadow'>
+    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
         onClick={handleClick}>
         {gameOver && <GameOver />}
         {running && <ScoreDisplay />}
-        <Sky />
-        <Obstacle
-          top={0}
-          height={obstacleHeight}
-          width={OBSTACLE_WIDTH}
-          left={obstacleLeft}
-        />
+        {!gameOver && <Sky />}
+        {!gameOver && (
+          <Obstacle
+            top={0}
+            height={obstacleHeight}
+            width={OBSTACLE_WIDTH}
+            left={obstacleLeft}
+          />
+        )}
 
-        <Bird top={birdPos} />
+        {!gameOver && <Bird top={birdPos} />}
 
-        <Obstacle
-          top={GAME_HEIGHT - obstacleHeight - bottomObstacleHeight}
-          height={bottomObstacleHeight}
-          width={OBSTACLE_WIDTH}
-          left={obstacleLeft}
-        />
-        <Ground />
+        {!gameOver && (
+          <Obstacle
+            top={GAME_HEIGHT - obstacleHeight - bottomObstacleHeight}
+            height={bottomObstacleHeight}
+            width={OBSTACLE_WIDTH}
+            left={obstacleLeft}
+          />
+        )}
+        {!gameOver && <Ground />}
       </div>
     </div>
   );
@@ -215,7 +201,7 @@ const ScoreDisplay = () => {
 const Bird = (props) => {
   return (
     <div
-      className={'Bird bg-contain absolute z-10'}
+      className='Bird bg-contain absolute z-10'
       style={{
         height: BIRD_SIZE,
         width: BIRD_SIZE,
@@ -228,7 +214,7 @@ const Bird = (props) => {
 const Obstacle = (props) => {
   return (
     <div
-      className={`Pipe bg-red-500 relative z-10`}
+      className={'Pipe bg-red-500 relative z-10'}
       style={{
         top: props.top,
         height: props.height,
@@ -273,11 +259,11 @@ const GameOver = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className='GameOver absolute flex flex-col justify-evenly items-center text-neutral-800 text-[40px] h-full w-full bg-[#f6e1f2] z-20 select-none'>
+    <div className='GameOver absolute flex flex-col justify-evenly items-center text-neutral-800 text-[40px] h-full w-full bg-transparent z-20 select-none'>
       <p className='font-bold'>{lastScore}</p>
       <p>{insults[Math.floor(Math.random() * insults.length)]}</p>
       <button
-        className='flex justify-center items-center border rounded p-1'
+        className='flex justify-center items-center rounded-[40px] py-2 px-4 border-[#eee] border-2 drop-shadow-lg bg-[#95c3e6] active:shadow-inner active:drop-shadow-none'
         onClick={() => dispatch(setGameOver(false))}>
         Play Again?
       </button>

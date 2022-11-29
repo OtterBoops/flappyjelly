@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setGameOver } from './redux/gameSlice';
 
-// import Header from './components/Header';
+import Header from './components/Header';
 import GameArea from './components/GameArea';
 import Footer from './components/Footer';
 import StatsArea from './components/StatsArea';
@@ -32,8 +32,8 @@ function App() {
     <div
       className='App flex flex-col justify-between items-center w-full bg-[#b6eaff] bg-contain bg-no-repeat bg-bottom'
       style={{ backgroundImage: `url(${Clouds})` }}>
-      {/* <Header /> */}
-      <main className='w-11/12 flex justify-evenly px-10 items-center flex-col grow '>
+      <Header />
+      <main className='w-full flex justify-evenly items-center flex-col grow '>
         <StatsArea
           name={random}
           scores={scores}
