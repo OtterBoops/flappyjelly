@@ -25,15 +25,16 @@ import Quack6 from '../assets/Quack6.wav';
 import Quack7 from '../assets/Quack7.wav';
 
 //Constants
-const BIRD_SIZE = 75;
-const GAME_HEIGHT = 700;
-const GAME_WIDTH = 450;
+const BIRD_SIZE = 60;
+
+const GAME_HEIGHT = 600;
+const GAME_WIDTH = 350;
 const GRAVITY = 5;
 const SPEED = 5;
 const GAME_TICK = 12;
 const JUMP_HEIGHT = 100;
-const OBSTACLE_WIDTH = 50;
-const OBSTACLE_GAP = BIRD_SIZE * 3;
+const OBSTACLE_WIDTH = 40;
+const OBSTACLE_GAP = BIRD_SIZE * 3.5;
 const HIGHSCORE_AMOUNT = 10;
 
 export default function GameArea(props) {
@@ -155,7 +156,7 @@ export default function GameArea(props) {
   };
 
   return (
-    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow'>
+    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow mb-5'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}

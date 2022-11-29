@@ -34,17 +34,27 @@ function App() {
       style={{ backgroundImage: `url(${Clouds})` }}>
       <Header />
       <main className='w-full flex justify-evenly items-center flex-col grow '>
+        <GameArea update={() => update()} />
         <StatsArea
           name={random}
           scores={scores}
           reset={() => resetScores()}
           update={() => update()}
         />
-        <GameArea update={() => update()} />
       </main>
       <Footer />
+
+      <Small />
     </div>
   );
 }
+
+const Small = () => {
+  return (
+    <div className='w-full h-full hidden xs:flex fixed top-0 left-0 bg-slate-200 z-30 justify-center items-center text-4xl text-center'>
+      Your device is too small to play this game.
+    </div>
+  );
+};
 
 export default App;
