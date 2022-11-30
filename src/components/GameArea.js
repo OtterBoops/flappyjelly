@@ -35,7 +35,7 @@ const GAME_TICK = 12;
 const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 40;
 const OBSTACLE_GAP = BIRD_SIZE * 3.5;
-const HIGHSCORE_AMOUNT = 10;
+const HIGHSCORE_AMOUNT = 3;
 
 export default function GameArea(props) {
   //Local State
@@ -156,7 +156,7 @@ export default function GameArea(props) {
   };
 
   return (
-    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow mb-5'>
+    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow mb-5 border-2'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}

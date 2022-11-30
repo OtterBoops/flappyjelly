@@ -33,7 +33,7 @@ function App() {
       className='App flex flex-col justify-between items-center w-full bg-[#b6eaff] bg-contain bg-no-repeat bg-bottom'
       style={{ backgroundImage: `url(${Clouds})` }}>
       <Header />
-      <main className='w-full flex justify-evenly items-center flex-col grow '>
+      <main className='w-full flex s:flex-col justify-evenly items-center grow '>
         <GameArea update={() => update()} />
         <StatsArea
           name={random}
