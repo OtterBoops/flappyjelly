@@ -15,6 +15,7 @@ function App() {
   const dispatch = useDispatch();
 
   const [random, setRandom] = useState();
+  const [random2, setRandom2] = useState();
 
   const resetScores = () => {
     localStorage.setItem('scores', JSON.stringify([]));
@@ -24,6 +25,7 @@ function App() {
 
   const update = () => {
     setRandom(Math.random());
+    setRandom2(Math.random());
   };
 
   let scores = JSON.parse(localStorage.getItem('scores'));
@@ -34,9 +36,9 @@ function App() {
       style={{ backgroundImage: `url(${Clouds})` }}>
       <Header />
       <main className='w-full flex s:flex-col justify-evenly items-center grow '>
-        <GameArea update={() => update()} />
+        <GameArea name={random} update={() => update()} />
         <StatsArea
-          name={random}
+          name={random2}
           scores={scores}
           reset={() => resetScores()}
           update={() => update()}

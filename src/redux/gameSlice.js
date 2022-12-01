@@ -7,6 +7,7 @@ export const gameSlice = createSlice({
     lastScore: 0,
     running: false,
     gameOver: false,
+    easyMode: false,
   },
   reducers: {
     increment: (state) => {
@@ -24,10 +25,19 @@ export const gameSlice = createSlice({
     setGameOver: (state, action) => {
       state.gameOver = action.payload;
     },
+    setEasyMode: (state, action) => {
+      state.easyMode = action.payload;
+    },
   },
 });
 
-export const { increment, reset, setRunning, setGameOver, setLastScore } =
-  gameSlice.actions;
+export const {
+  increment,
+  reset,
+  setRunning,
+  setGameOver,
+  setLastScore,
+  setEasyMode,
+} = gameSlice.actions;
 
 export default gameSlice.reducer;

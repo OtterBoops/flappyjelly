@@ -28,7 +28,6 @@ import Quack7 from '../assets/Quack7.wav';
 
 //Constants
 const BIRD_SIZE = 60;
-
 const GAME_HEIGHT = 600;
 const GAME_WIDTH = 350;
 const GRAVITY = 5;
@@ -36,10 +35,13 @@ const SPEED = 5;
 const GAME_TICK = 12;
 const JUMP_HEIGHT = 100;
 const OBSTACLE_WIDTH = 40;
-const OBSTACLE_GAP = BIRD_SIZE * 3.5;
 const HIGHSCORE_AMOUNT = 3;
 
 export default function GameArea(props) {
+  var OBSTACLE_GAP = useSelector((state) => state.game.easyMode)
+    ? BIRD_SIZE * 8
+    : BIRD_SIZE * 3.5;
+
   //Local State
   const [birdPos, setBirdPos] = useState(GAME_HEIGHT / 2 - BIRD_SIZE / 2);
   const [obstacleHeight, setObstacleHight] = useState(350);
@@ -56,6 +58,7 @@ export default function GameArea(props) {
   const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight;
   const Quacks = [Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7];
   let scores = JSON.parse(localStorage.getItem('scores'));
+  let easyMode = useSelector((state) => state.game.easyMode);
 
   useEffect(() => {
     let timeId;
@@ -117,14 +120,15 @@ export default function GameArea(props) {
       dispatch(setGameOver(true));
       dispatch(reset());
 
-      if (scores.length < HIGHSCORE_AMOUNT) {
+      if (scores.length < HIGHSCORE_AMOUNT && !easyMode) {
         scores.push(currentScore);
         scores.sort((a, b) => {
           return b - a;
         });
       } else if (
         scores.length === HIGHSCORE_AMOUNT &&
-        scores[scores.length - 1] < currentScore
+        scores[scores.length - 1] < currentScore &&
+        !easyMode
       ) {
         scores[scores.length - 1] = currentScore;
         scores.sort((a, b) => {

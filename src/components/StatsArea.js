@@ -1,4 +1,9 @@
+import { useDispatch } from 'react-redux';
+import { setEasyMode } from '../redux/gameSlice';
+
 export default function StatsArea(props) {
+  const dispatch = useDispatch();
+
   return (
     <aside
       key={props.name}
@@ -15,7 +20,10 @@ export default function StatsArea(props) {
         ))}
       </div>
 
-      {/* <button onClick={() => props.reset()}>Reset scores</button> */}
+      <button onClick={() => props.reset()}>Reset scores</button>
+      <button onClick={() => dispatch(setEasyMode(true))}>
+        I am a big baby and the game is too hard
+      </button>
     </aside>
   );
 }
