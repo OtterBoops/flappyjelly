@@ -13,6 +13,8 @@ import {
 
 //Image Imports
 import Duck from '../assets/Duck.png';
+import GameBg from '../assets/GameBg.png';
+import ShitYourselfDog from '../assets/ShitYourself.png';
 
 //Sound Imports
 import Bitch from '../assets/Bitch.wav';
@@ -183,7 +185,7 @@ export default function GameArea(props) {
             left={obstacleLeft}
           />
         )}
-        {!gameOver && <Ground />}
+        {!gameOver && <ShitYourself />}
       </div>
     </div>
   );
@@ -193,8 +195,10 @@ const ScoreDisplay = () => {
   const currentScore = useSelector((state) => state.game.score);
 
   return (
-    <div className='GameScore absolute w-full text-center z-10 mt-10 text-[40px] text-neutral-100 font-bold'>
-      {currentScore}
+    <div className='GameScore absolute text-center z-10 mt-10 text-[40px] text-neutral-800 font-bold select-none w-full flex items-center justify-center'>
+      <p className='bg-[#f6e1f2] h-12 w-12 p-0 m-0 flex justify-center items-center Shadow rounded-lg'>
+        {currentScore}
+      </p>
     </div>
   );
 };
@@ -202,7 +206,7 @@ const ScoreDisplay = () => {
 const Bird = (props) => {
   return (
     <div
-      className='Bird bg-contain absolute z-10'
+      className='Bird bg-contain absolute z-10 select-none'
       style={{
         height: BIRD_SIZE,
         width: BIRD_SIZE,
@@ -228,19 +232,29 @@ const Obstacle = (props) => {
 const Sky = () => {
   const running = useSelector((state) => state.game.running);
   const gameOver = useSelector((state) => state.game.gameOver);
+  const score = useSelector((state) => state.game.score);
 
   let click = !running && !gameOver;
 
   return (
-    <div className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300 h-4/5 w-full flex justify-center items-center select-none text-neutral-100 text-[40px]'>
+    <div
+      className='Sky absolute bg-gradient-to-b from-sky-600 to-sky-300 h-full w-full flex justify-center items-center flex-col select-none text-neutral-800 font-bold text-[40px]'
+      style={{ backgroundImage: `url(${GameBg})` }}>
+      <img
+        src={`${ShitYourselfDog}`}
+        alt=''
+        className='aspect-square mix-blend-overlay max-h-32'
+        style={{ opacity: `${Math.min(score / 200, 1)}` }}
+        draggable={false}
+      />
       {click && <p>Click To Start</p>}
     </div>
   );
 };
 
-const Ground = () => {
+const ShitYourself = () => {
   return (
-    <div className='Ground bottom-0 absolute bg-gradient-to-b from-lime-600 to-lime-800 h-1/5 w-full'></div>
+    <div className='Ground bottom-0 absolute h-1/5 w-full select-none flex justify-center'></div>
   );
 };
 

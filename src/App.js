@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setGameOver } from './redux/gameSlice';
 
 import Header from './components/Header';
 import GameArea from './components/GameArea';
 import Footer from './components/Footer';
 import StatsArea from './components/StatsArea';
-import Clouds from './assets/Background1.jpg';
+import Clouds from './assets/Bg.jpg';
 
 if (localStorage.getItem('scores') === null)
   localStorage.setItem('scores', JSON.stringify([]));

@@ -3,7 +3,7 @@ export default function StatsArea(props) {
     <aside
       key={props.name}
       className='StatsArea flex flex-col justify-top text-neutral-800 items-left text-center flex-[1 1 0] text-3xl w-1/3 h-full s:w-11/12'>
-      <span>Top scores</span>
+      <span className='mb-2'>Top scores</span>
       <div className='flex flex-row justify-center flex-wrap'>
         {props.scores.map((number) => (
           <p
