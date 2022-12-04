@@ -232,7 +232,10 @@ const Bird = (props) => {
 const Obstacle = (props) => {
   return (
     <div
-      className={'Pipe relative z-10 bg-bottom bg-repeat-y bg-contain'}
+      draggable={false}
+      className={
+        'Pipe relative z-10 bg-bottom bg-repeat-y bg-contain select-none'
+      }
       style={{
         top: props.top,
         height: props.height,
