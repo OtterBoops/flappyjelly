@@ -8,7 +8,7 @@ export default function StatsArea(props) {
     <aside
       key={props.name}
       className='StatsArea flex flex-col text-neutral-800 text-center text-3xl w-1/3 h-full s:w-11/12 justify-evenly'>
-      <div>
+      <div className='mb-3'>
         <span className=''>Top scores</span>
         <div className='flex flex-row justify-center flex-wrap'>
           {props.scores.map((number) => (
@@ -23,7 +23,7 @@ export default function StatsArea(props) {
       </div>
 
       <button
-        className='bg-jellyPink rounded-lg p-2 text-xl Shadow'
+        className='bg-jellyPink rounded-lg p-2 text-xl Shadow s:w-1/2 s:m-auto'
         onClick={() => dispatch(setEasyMode(true))}>
         I am a big baby and the game is too hard
       </button>
