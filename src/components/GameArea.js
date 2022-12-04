@@ -53,6 +53,7 @@ export default function GameArea(props) {
   const running = useSelector((state) => state.game.running);
   const gameOver = useSelector((state) => state.game.gameOver);
   const currentScore = useSelector((state) => state.game.score);
+  const muted = useSelector((state) => state.game.muted);
 
   //Other Consts
   const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight;
@@ -104,6 +105,7 @@ export default function GameArea(props) {
       birdPos <= GAME_HEIGHT &&
       birdPos >= GAME_HEIGHT - bottomObstacleHeight - BIRD_SIZE;
     const collidedGround = birdPos >= GAME_HEIGHT - BIRD_SIZE;
+    let bitch = new Audio(Bitch);
 
     if (
       (obstacleLeft >= 0 &&
@@ -111,29 +113,28 @@ export default function GameArea(props) {
         (collidedBot || collidedTop)) ||
       collidedGround
     ) {
-      let bitch = new Audio(Bitch);
-
-      bitch.play();
+      if (!muted) bitch.play();
 
       dispatch(setLastScore(currentScore));
       dispatch(setRunning(false));
       dispatch(setGameOver(true));
       dispatch(reset());
 
-      if (scores.length < HIGHSCORE_AMOUNT && !easyMode) {
-        scores.push(currentScore);
-        scores.sort((a, b) => {
-          return b - a;
-        });
-      } else if (
-        scores.length === HIGHSCORE_AMOUNT &&
-        scores[scores.length - 1] < currentScore &&
-        !easyMode
-      ) {
-        scores[scores.length - 1] = currentScore;
-        scores.sort((a, b) => {
-          return b - a;
-        });
+      if (!easyMode) {
+        if (scores.length < HIGHSCORE_AMOUNT) {
+          scores.push(currentScore);
+          scores.sort((a, b) => {
+            return b - a;
+          });
+        } else if (
+          scores.length === HIGHSCORE_AMOUNT &&
+          scores[scores.length - 1] < currentScore
+        ) {
+          scores[scores.length - 1] = currentScore;
+          scores.sort((a, b) => {
+            return b - a;
+          });
+        }
       }
 
       localStorage.setItem('scores', JSON.stringify(scores));
@@ -149,7 +150,7 @@ export default function GameArea(props) {
     let quack = new Audio(Quacks[Math.floor(Math.random() * Quacks.length)]);
 
     if (!gameOver) {
-      quack.play();
+      if (!muted) quack.play();
       if (!running) dispatch(setRunning(true));
       else if (newBirdPos < 0) setBirdPos(0);
       else {
@@ -162,7 +163,7 @@ export default function GameArea(props) {
   };
 
   return (
-    <div className='GameBox bg-[#f6e1f2] p-4 rounded-lg Shadow mb-5 border-2'>
+    <div className='GameBox bg-jellyPink p-4 rounded-lg Shadow mb-5 border-2'>
       <div
         className='GameArea relative overflow-hidden rounded-lg'
         style={{ height: GAME_HEIGHT, width: GAME_WIDTH }}
@@ -200,7 +201,7 @@ const ScoreDisplay = () => {
 
   return (
     <div className='GameScore absolute text-center z-10 mt-10 text-[40px] text-neutral-800 font-bold select-none w-full flex items-center justify-center'>
-      <p className='bg-[#f6e1f2] h-12 w-12 p-0 m-0 flex justify-center items-center Shadow rounded-lg'>
+      <p className='bg-jellyPink h-12 w-12 p-0 m-0 flex justify-center items-center Shadow rounded-lg'>
         {currentScore}
       </p>
     </div>

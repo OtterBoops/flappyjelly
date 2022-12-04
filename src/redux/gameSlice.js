@@ -8,6 +8,8 @@ export const gameSlice = createSlice({
     running: false,
     gameOver: false,
     easyMode: false,
+    flipped: false,
+    muted: false,
   },
   reducers: {
     increment: (state) => {
@@ -28,6 +30,12 @@ export const gameSlice = createSlice({
     setEasyMode: (state, action) => {
       state.easyMode = action.payload;
     },
+    toggleFlip: (state) => {
+      state.flipped = true;
+    },
+    toggleMute: (state) => {
+      state.muted = !state.muted;
+    },
   },
 });
 
@@ -38,6 +46,8 @@ export const {
   setGameOver,
   setLastScore,
   setEasyMode,
+  toggleFlip,
+  toggleMute,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

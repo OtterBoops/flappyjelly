@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setGameOver } from './redux/gameSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleFlip, setGameOver, toggleMute } from './redux/gameSlice';
 
 import Header from './components/Header';
 import GameArea from './components/GameArea';
 import Footer from './components/Footer';
 import StatsArea from './components/StatsArea';
 import Clouds from './assets/Bg.jpg';
+import Cheats from './components/Cheats';
 
 if (localStorage.getItem('scores') === null)
   localStorage.setItem('scores', JSON.stringify([]));
@@ -17,15 +18,23 @@ function App() {
   const [random, setRandom] = useState();
   const [random2, setRandom2] = useState();
 
-  const resetScores = () => {
-    localStorage.setItem('scores', JSON.stringify([]));
-    setRandom(Math.random());
-    dispatch(setGameOver(false));
-  };
-
   const update = () => {
     setRandom(Math.random());
     setRandom2(Math.random());
+  };
+
+  const cheats = {
+    flip: () => {
+      dispatch(toggleFlip());
+    },
+    reset: () => {
+      localStorage.setItem('scores', JSON.stringify([]));
+      setRandom(Math.random());
+      dispatch(setGameOver(false));
+    },
+    mute: () => {
+      dispatch(toggleMute());
+    },
   };
 
   let scores = JSON.parse(localStorage.getItem('scores'));
@@ -33,16 +42,23 @@ function App() {
   return (
     <div
       className='App flex flex-col justify-between items-center w-full bg-[#b6eaff] bg-contain bg-no-repeat bg-bottom'
-      style={{ backgroundImage: `url(${Clouds})` }}>
+      style={{
+        backgroundImage: `url(${Clouds})`,
+        transform: `${useSelector((state) =>
+          state.game.flipped ? 'rotate(180deg)' : ''
+        )}`,
+      }}>
       <Header />
-      <main className='w-full flex s:flex-col justify-evenly items-center grow '>
+
+      <Cheats
+        reset={() => cheats.reset()}
+        flip={() => cheats.flip()}
+        mute={() => cheats.mute()}
+      />
+
+      <main className='w-full flex s:flex-col justify-evenly items-center grow h-full'>
         <GameArea name={random} update={() => update()} />
-        <StatsArea
-          name={random2}
-          scores={scores}
-          reset={() => resetScores()}
-          update={() => update()}
-        />
+        <StatsArea name={random2} scores={scores} update={() => update()} />
       </main>
       <Footer />
 
