@@ -120,7 +120,7 @@ export default function GameArea(props) {
         mayo.play();
         setTimeout(() => {
           bitch.play();
-        }, 1000);
+        }, 500);
       }
 
       dispatch(setLastScore(currentScore));
