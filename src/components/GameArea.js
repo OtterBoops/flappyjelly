@@ -15,6 +15,7 @@ import {
 import Duck from '../assets/Duck.png';
 import GameBg from '../assets/GameBg.png';
 import ShitYourselfDog from '../assets/ShitYourself.png';
+import Mayo from '../assets/MayoJar.png';
 
 //Sound Imports
 import Bitch from '../assets/Bitch.wav';
@@ -25,6 +26,7 @@ import Quack4 from '../assets/Quack4.wav';
 import Quack5 from '../assets/Quack5.wav';
 import Quack6 from '../assets/Quack6.wav';
 import Quack7 from '../assets/Quack7.wav';
+import MayoSound from '../assets/Mayo.wav';
 
 //Constants
 const BIRD_SIZE = 60;
@@ -106,6 +108,7 @@ export default function GameArea(props) {
       birdPos >= GAME_HEIGHT - bottomObstacleHeight - BIRD_SIZE;
     const collidedGround = birdPos >= GAME_HEIGHT - BIRD_SIZE;
     let bitch = new Audio(Bitch);
+    let mayo = new Audio(MayoSound);
 
     if (
       (obstacleLeft >= 0 &&
@@ -113,7 +116,12 @@ export default function GameArea(props) {
         (collidedBot || collidedTop)) ||
       collidedGround
     ) {
-      if (!muted) bitch.play();
+      if (!muted) {
+        mayo.play();
+        setTimeout(() => {
+          bitch.play();
+        }, 1000);
+      }
 
       dispatch(setLastScore(currentScore));
       dispatch(setRunning(false));
@@ -224,12 +232,13 @@ const Bird = (props) => {
 const Obstacle = (props) => {
   return (
     <div
-      className={'Pipe bg-red-500 relative z-10'}
+      className={'Pipe relative z-10 bg-bottom bg-repeat-y bg-contain'}
       style={{
         top: props.top,
         height: props.height,
         width: props.width,
         left: props.left,
+        backgroundImage: `url(${Mayo})`,
       }}></div>
   );
 };
