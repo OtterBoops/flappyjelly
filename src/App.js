@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleFlip, setGameOver, toggleMute } from './redux/gameSlice';
+import {
+  toggleFlip,
+  setGameOver,
+  toggleMute,
+  setBigMayo,
+} from './redux/gameSlice';
 
 import Header from './components/Header';
 import GameArea from './components/GameArea';
@@ -35,6 +40,9 @@ function App() {
     mute: () => {
       dispatch(toggleMute());
     },
+    bigMayo: () => {
+      dispatch(setBigMayo());
+    },
   };
 
   let scores = JSON.parse(localStorage.getItem('scores'));
@@ -54,6 +62,7 @@ function App() {
         reset={() => cheats.reset()}
         flip={() => cheats.flip()}
         mute={() => cheats.mute()}
+        bigMayo={() => cheats.bigMayo()}
       />
 
       <main className='w-full flex s:flex-col justify-evenly items-center grow h-full'>

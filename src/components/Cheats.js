@@ -15,6 +15,10 @@ export default function Cheats(props) {
         props.mute();
         break;
 
+      case 'bigmayo':
+        props.bigMayo();
+        break;
+
       default:
         break;
     }

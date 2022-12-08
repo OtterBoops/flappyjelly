@@ -230,6 +230,7 @@ const Bird = (props) => {
 };
 
 const Obstacle = (props) => {
+  const bigMayo = useSelector((state) => state.game.bigMayo);
   return (
     <div
       draggable={false}
@@ -241,8 +242,10 @@ const Obstacle = (props) => {
         height: props.height,
         width: props.width,
         left: props.left,
-        backgroundImage: `url(${Mayo})`,
-      }}></div>
+        backgroundImage: bigMayo ? 'none' : `url(${Mayo})`,
+      }}>
+      {bigMayo && <img src={`${Mayo}`} className='h-full w-full' />}
+    </div>
   );
 };
 
