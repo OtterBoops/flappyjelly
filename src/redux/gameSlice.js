@@ -11,6 +11,7 @@ export const gameSlice = createSlice({
     flipped: false,
     muted: false,
     bigMayo: false,
+    hardMode: false,
   },
   reducers: {
     increment: (state) => {
@@ -40,6 +41,9 @@ export const gameSlice = createSlice({
     setBigMayo: (state) => {
       state.bigMayo = true;
     },
+    setHardMode: (state) => {
+      state.hardMode = !state.hardMode;
+    },
   },
 });
 
@@ -53,6 +57,7 @@ export const {
   toggleFlip,
   toggleMute,
   setBigMayo,
+  setHardMode,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

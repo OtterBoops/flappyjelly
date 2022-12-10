@@ -20,11 +20,11 @@ import Mayo from '../assets/MayoJar.png';
 //Sound Imports
 import Bitch from '../assets/Bitch.wav';
 import Quack1 from '../assets/Quack1.wav';
-import Quack2 from '../assets/Quack2.wav';
+// import Quack2 from '../assets/Quack2.wav';
 import Quack3 from '../assets/Quack3.wav';
 import Quack4 from '../assets/Quack4.wav';
 import Quack5 from '../assets/Quack5.wav';
-import Quack6 from '../assets/Quack6.wav';
+// import Quack6 from '../assets/Quack6.wav';
 import Quack7 from '../assets/Quack7.wav';
 import MayoSound from '../assets/Mayo.wav';
 
@@ -56,10 +56,11 @@ export default function GameArea(props) {
   const gameOver = useSelector((state) => state.game.gameOver);
   const currentScore = useSelector((state) => state.game.score);
   const muted = useSelector((state) => state.game.muted);
+  const hardmode = useSelector((state) => state.game.hardMode);
 
   //Other Consts
   const bottomObstacleHeight = GAME_HEIGHT - OBSTACLE_GAP - obstacleHeight;
-  const Quacks = [Quack1, Quack2, Quack3, Quack4, Quack5, Quack6, Quack7];
+  const Quacks = [Quack1, Quack3, Quack4, Quack5, Quack7];
   let scores = JSON.parse(localStorage.getItem('scores'));
   let easyMode = useSelector((state) => state.game.easyMode);
 
@@ -84,10 +85,13 @@ export default function GameArea(props) {
     let obstacleId;
 
     if (running && obstacleLeft >= -OBSTACLE_WIDTH) {
-      obstacleId = setInterval(() => {
-        setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
-      }, GAME_TICK);
-
+      hardmode
+        ? (obstacleId = setInterval(() => {
+            setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED * 1.5);
+          }, GAME_TICK))
+        : (obstacleId = setInterval(() => {
+            setObstacleLeft((obstacleLeft) => obstacleLeft - SPEED);
+          }, GAME_TICK));
       return () => {
         clearInterval(obstacleId);
       };

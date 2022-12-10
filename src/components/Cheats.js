@@ -18,6 +18,10 @@ export default function Cheats(props) {
       case 'bigmayo':
         props.bigMayo();
         break;
+      case 'hard':
+        console.log('hardmode on');
+        props.hardMode();
+        break;
 
       default:
         break;

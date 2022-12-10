@@ -5,6 +5,7 @@ import {
   setGameOver,
   toggleMute,
   setBigMayo,
+  setHardMode,
 } from './redux/gameSlice';
 
 import Header from './components/Header';
@@ -43,6 +44,9 @@ function App() {
     bigMayo: () => {
       dispatch(setBigMayo());
     },
+    hardMode: () => {
+      dispatch(setHardMode());
+    },
   };
 
   let scores = JSON.parse(localStorage.getItem('scores'));
@@ -63,6 +67,7 @@ function App() {
         flip={() => cheats.flip()}
         mute={() => cheats.mute()}
         bigMayo={() => cheats.bigMayo()}
+        hardMode={() => cheats.hardMode()}
       />
 
       <main className='w-full flex s:flex-col justify-evenly items-center grow h-full'>
